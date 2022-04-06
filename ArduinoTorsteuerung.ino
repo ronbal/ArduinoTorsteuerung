@@ -72,7 +72,7 @@ const int T1 = 6 ;         //Taster AUF
 //const int T2 = 6 ;         //Taster ZU
 const int T3 = 7 ;         //STOP
 
-const float maxstrom = 500;   //Strombegrenzung
+const float maxstrom = 3000;   //Strombegrenzung
 boolean T1status = false;
 boolean T2status = false;
 boolean T3status = false;
@@ -81,10 +81,10 @@ long previousMillis = 0;
 boolean auf = false;              //Tor in AUF-Bewegung
 boolean zu = false;               //Tor in ZU-Bewegung
 byte modus;
-int zeitaufli = 10000;                 //Zeit zum öffnen
-int zeitzuli = 10000;                  //Zeit zum schliessen
-int zeitaufre = 9000;                 //Zeit zum öffnen
-int zeitzure = 9000;                  //Zeit zum schliessen
+int zeitaufli = 11000;                 //Zeit zum öffnen
+int zeitzuli = 11000;                  //Zeit zum schliessen
+int zeitaufre = 12000;                 //Zeit zum öffnen
+int zeitzure = 12000;                  //Zeit zum schliessen
 int zeitwarten = 2000;              //Zeit Ampelmatrix nachleuchten
 int zeitversatz = 2000;             //Zeit Veratz der Motoren beim anlauf
 void setup() {
@@ -170,7 +170,7 @@ Serial.print(" Current[mA] 21: "); Serial.println(current_mA1);
 
     if((millis() - previousMillis >= zeitversatz) && (auf == true)) {
     digitalWrite(R3, LOW);
-     
+delay(500);    
     modus++;
     }
     break;
@@ -261,6 +261,7 @@ Serial.print(" Millis "); Serial.println(millis() - previousMillis);
   
     modus++;
     }
+delay(500);
     break;   
     
  case 7:
@@ -268,7 +269,7 @@ Serial.print(" Millis "); Serial.println(millis() - previousMillis);
 current_mA0 = inam0.getCurrent_mA();
 current_mA1 = inam1.getCurrent_mA();
 Serial.print("Current[mA] M1: "); Serial.print(current_mA0);
-Serial.print(" Current[mA] 21: "); Serial.print(current_mA1);
+Serial.print(" Current[mA] M2: "); Serial.print(current_mA1);
 Serial.print(" Millis "); Serial.println(millis() - previousMillis);
  
     if(digitalRead(T1) == HIGH || millis() - previousMillis >= zeitzure || current_mA0 > maxstrom || current_mA1 > maxstrom){
@@ -296,7 +297,7 @@ Serial.print(" Millis "); Serial.println(millis() - previousMillis);
    
       
    
-    digitalWrite(R1, HIGH);
+    
     auf = false;
     modus = 8;
     }
@@ -311,7 +312,7 @@ Serial.print("Current[mA] M1: "); Serial.print(current_mA0);
 Serial.print(" Current[mA] 21: "); Serial.print(current_mA1);
 Serial.print(" Millis "); Serial.println(millis() - previousMillis);
  
-    if(digitalRead(T3) == HIGH || millis() - previousMillis >= zeitzuli || current_mA0 > maxstrom || current_mA1 > maxstrom){
+    if(digitalRead(T3) == HIGH || millis() - previousMillis >= zeitzuli + zeitversatz || current_mA1 > maxstrom){
       for (int i=0; i<8; i++){
     lc.setRow(0,i,stopp[i]);
      lc.setRow(1,i,stopp[i]);
